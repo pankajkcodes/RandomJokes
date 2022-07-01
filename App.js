@@ -1,20 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button } from 'react-native';
 
-export default function App() {
+function App() {
+  const [joke, setJoke] = useState('');
+  const getJokes = async () => {
+    const response = await fetch('http://api.icndb.com/jokes/random');
+    const result = await response.json();
+    console.log(result.value.joke);
+    setJoke(result.value.joke);
+  };
+
+  useEffect(() => {
+    getJokes();
+  }, []);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View>
+      <Button title="Get Jokes" onPress={() => getJokes()} />
+
+      {joke ? <Text>{joke}</Text> : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
